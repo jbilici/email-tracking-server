@@ -10,6 +10,7 @@ from datetime import datetime
 import io
 import uuid
 import re
+from PIL import Image
 
 app = Flask(__name__)
 
