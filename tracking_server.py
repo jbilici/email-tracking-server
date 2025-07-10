@@ -52,7 +52,7 @@ def init_database():
     ''')
     conn.commit()
     conn.close()
-    print("Database initialized successfully!")
+    # print("Database initialized successfully!")  # Commented out to avoid spam
 
 @app.route('/')
 def home():
@@ -78,6 +78,9 @@ def home():
 def track_email(tracking_id):
     """Track email open and return transparent pixel"""
     try:
+        # Ensure database exists
+        init_database()
+        
         user_agent = request.headers.get('User-Agent', 'Unknown')
         ip_address = request.remote_addr
         
@@ -122,6 +125,9 @@ def track_email(tracking_id):
 def track_link_click(link_id):
     """Track link click and redirect to original URL"""
     try:
+        # Ensure database exists
+        init_database()
+        
         user_agent = request.headers.get('User-Agent', 'Unknown')
         ip_address = request.remote_addr
         
@@ -168,6 +174,9 @@ def track_link_click(link_id):
 @app.route('/link-stats')
 def view_link_stats():
     """View link tracking statistics"""
+    # Ensure database exists
+    init_database()
+    
     conn = sqlite3.connect('link_tracking.db')
     cursor = conn.cursor()
     
@@ -210,6 +219,9 @@ def view_link_stats():
 @app.route('/stats')
 def view_stats():
     """View email tracking statistics"""
+    # Ensure database exists
+    init_database()
+    
     conn = sqlite3.connect('email_tracking.db')
     cursor = conn.cursor()
     
@@ -254,6 +266,9 @@ def view_stats():
 def debug_database():
     """Debug database contents"""
     try:
+        # Ensure database exists
+        init_database()
+        
         conn = sqlite3.connect('email_tracking.db')
         cursor = conn.cursor()
         
