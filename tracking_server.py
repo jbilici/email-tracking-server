@@ -301,6 +301,37 @@ def debug_database():
     except Exception as e:
         return f'<html><body><h1>Debug Error</h1><p>{str(e)}</p></body></html>'
 
+@app.route('/api/add-link', methods=['POST'])
+def add_link():
+    """API endpoint to add link tracking data"""
+    try:
+        # Ensure database exists
+        init_database()
+        
+        data = request.get_json()
+        
+        if not data or not all(k in data for k in ['link_id', 'original_url', 'email_id', 'recipient_email']):
+            return {'error': 'Missing required fields'}, 400
+        
+        conn = sqlite3.connect('link_tracking.db')
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO link_tracking 
+            (link_id, original_url, email_id, recipient_email, created_at) 
+            VALUES (?, ?, ?, ?, ?)
+        ''', (data['link_id'], data['original_url'], data['email_id'], 
+              data['recipient_email'], datetime.now()))
+        
+        conn.commit()
+        conn.close()
+        
+        return {'success': True, 'link_id': data['link_id']}, 200
+        
+    except Exception as e:
+        print(f"API add-link error: {e}")
+        return {'error': str(e)}, 500
+
 if __name__ == '__main__':
     # Initialize database first
     init_database()
